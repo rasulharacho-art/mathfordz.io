@@ -9,8 +9,15 @@ app.secret_key = 'math_check_secret_key_change_me'
 
 # Конфигурация
 ADMIN_PASSWORD = 'math123'  # Пароль для входа в админку
-UPLOAD_FOLDER = 'uploads'
-DATABASE = 'mathcheck.db'
+# Конфигурация Amvera: сохраняем всё в постоянную папку /data
+if os.path.exists('/data'):
+    UPLOAD_FOLDER = '/data/uploads'
+    DATABASE = '/data/mathcheck.db'
+else:
+    # Локальная конфигурация для тестов на компьютере
+    UPLOAD_FOLDER = 'uploads'
+    DATABASE = 'mathcheck.db'
+
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Создаем папку для PDF, если её нет
@@ -187,7 +194,16 @@ ADMIN_HTML = """
                                 <tr>
                                     <td><strong>{{ res[2] }}</strong></td>
                                     <td style="font-size:0.8rem; color:#666;">{{ res[7] }}</td>
-                                    <td style="font-size:0.85rem; white-space: pre-line;">{{ res[3] }}</td>
+                                    <td>
+    <details style="outline: none;">
+        <summary style="cursor: pointer; color: #4a6fa5; font-weight: bold; font-size: 0.85rem; user-select: none;">
+            Показать ответы
+        </summary>
+        <div style="margin-top: 8px; font-size:0.85rem; white-space: pre-line; line-height: 1.4; background: #fff; padding: 5px; border: 1px dashed #ccc; border-radius: 4px;">
+            {{ res[3] }}
+        </div>
+    </details>
+</td>
                                     <td>{{ res[4] }} из {{ res[5] }}</td>
                                     <td><span class="badge {% if res[6] >= 70 %}badge-success{% else %}badge-danger{% endif %}">{{ "%.0f"|format(res[6]) }}%</span></td>
                                 </tr>
